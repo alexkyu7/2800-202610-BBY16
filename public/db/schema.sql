@@ -2,7 +2,9 @@ DROP SCHEMA IF EXISTS Foodle_db CASCADE;
 CREATE SCHEMA Foodle_db;
 
 -- services — the main directory
--- id, name, type (enum: food_bank, grocery, recycling, etc.), address, location (PostGIS geography point), phone, website, hours (JSONB), requires_id (bool), is_accessible (bool), dietary_tags (array)
+-- id, name, type (enum: food_bank, grocery, recycling, etc.), 
+-- address, location (PostGIS geography point), phone, website, hours (JSONB), 
+-- requires_id (bool), is_accessible (bool), dietary_tags (array)
 CREATE TABLE services (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
