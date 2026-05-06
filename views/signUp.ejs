@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Food\+ Portal \- Sign up</title>
+  <title>Food+ Portal - Sign up</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="auth">
 <main class="auth-card">
   <h1>Sign up</h1>
-  <p>Create your account\.</p>
-  <form>
+  <p>Create your account.</p>
+
+  <% if (error) { %>
+    <p class="auth-error"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/signupSubmit">
     <label for="name">Full name</label>
     <input id="name" name="name" type="text" autocomplete="name" required>
 
@@ -22,6 +27,6 @@
 
     <button class="btn" type="submit">Create account</button>
   </form>
-  <p class="auth-footer">Already have an account? <a href="/loginPage">Log in</a></p>
+  <p class="auth-footer">Already have an account? <a href="/login">Log in</a></p>
 </main>
 <%- include('partials/footer') %>
