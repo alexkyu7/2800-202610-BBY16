@@ -1,0 +1,36 @@
+<%- include('partials/header', { title }) %>
+
+<main class="container">
+  <h1>Search services</h1>
+  <div class="search-bar">
+    <input type="text" placeholder="Service or organization">
+    <input type="text" placeholder="City or postal code">
+    <select>
+      <option>All services</option>
+      <option>Food bank</option>
+      <option>Meal program</option>
+      <option>Community fridge</option>
+      <option>Food recycling</option>
+    </select>
+    <button class="btn">Search</button>
+  </div>
+
+  <section class="grid">
+    <article class="card">
+      <h4>Community Kitchen</h4>
+      <p>Hot meals \- Mon, Wed, Fri</p>
+      <button class="btn-outline">Add to cart</button>
+    </article>
+    <article class="card">
+      <h4>Downtown Food Bank</h4>
+      <p>Pickup \- Tue, Thu</p>
+      <button class="btn-outline">Add to cart</button>
+    </article>
+    <article class="card">
+      <h4>West End Community Fridge</h4>
+      <p>Open24/7</p>
+      <button class="btn-outline">Add to cart</button>
+    </article>
+  </section>
+</main>
+<%- include('partials/footer') %>
