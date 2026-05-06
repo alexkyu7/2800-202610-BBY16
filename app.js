@@ -128,7 +128,7 @@ app.post("/signupSubmit", async (req, res) => {
 
 // login
 
-app.get("/login", (req, res) => {
+app.get("/loginPage", (req, res) => {
   res.render("loginPage", { error: null });
 });
 
