@@ -3,14 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Food\+ Portal \- Log in</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Log in</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body class="auth">
 <main class="auth-card">
   <h1>Log in</h1>
-  <p>Welcome back\.</p>
-  <form>
+  <p>Welcome back.</p>
+
+  <% if (error) { %>
+    <p class="auth-error"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/loginSubmit">
     <label for="email">Email</label>
     <input id="email" name="email" type="email" autocomplete="email" required>
 
@@ -19,6 +25,7 @@
 
     <button class="btn" type="submit">Log in</button>
   </form>
-  <p class="auth-footer">No account? <a href="/signUp">Sign up</a></p>
+  <p class="auth-footer">No account? <a href="/signup">Sign up</a></p>
 </main>
+<a href="/" class="btn-secondary">← Back to Home</a>
 <%- include('partials/footer') %>
