@@ -76,6 +76,13 @@ app.get("/accountPage", (req, res) => {
   res.render("accountPage", { title: "Account" });
 });
 
+app.get("/favouritePage", (req, res) => {
+  res.render("favouritePage", { 
+    title: "Favorites",
+    cssFiles: ["/css/favorite.css"]
+   });
+});
+
 // signup
 
 app.get("/signup", (req, res) => {
