@@ -27,22 +27,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
-    session({
-      secret: process.env.NODE_SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
+  session({
+    secret: process.env.NODE_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
 
-      // TODO: Replace with a PostgreSQL-compatible session store
-      // e.g. connect-pg-simple: const pgSession = require("connect-pg-simple")(session);
-      // store: new pgSession({ pool: POSTGRES_CLIENT, tableName: "POSTGRES_SESSIONS_TABLE" })
-      // store: "POSTGRES_SESSION_STORE",
+    // TODO: Replace with a PostgreSQL-compatible session store
+    // e.g. connect-pg-simple: const pgSession = require("connect-pg-simple")(session);
+    // store: new pgSession({ pool: POSTGRES_CLIENT, tableName: "POSTGRES_SESSIONS_TABLE" })
+    // store: "POSTGRES_SESSION_STORE",
 
-      cookie: {
-        maxAge: expireTime,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      },
-    })
+    cookie: {
+      maxAge: expireTime,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
+  }),
 );
 
 // helper
@@ -76,8 +76,27 @@ app.get("/accountPage", (req, res) => {
   res.render("accountPage", { title: "Account" });
 });
 
-// signup
+app.get("/foodBanks", (req, res) => {
+  res.render("foodBanks", { title: "Food Banks" });
+});
 
+app.get("/communityFridges", (req, res) => {
+  res.render("communityFridges", { title: "Community Fridges" });
+});
+
+app.get("/mealPrograms", (req, res) => {
+  res.render("mealPrograms", { title: "Meal Programs" });
+});
+
+app.get("/foodRecycling", (req, res) => {
+  res.render("foodRecycling", { title: "Food Recycling" });
+});
+
+app.get("/otherServices", (req, res) => {
+  res.render("otherServices", { title: "Other Services" });
+});
+
+// signup
 app.get("/signup", (req, res) => {
   res.render("signUp", { error: null });
 });
@@ -103,7 +122,9 @@ app.post("/signupSubmit", async (req, res) => {
 
   const { error } = schema.validate({ name, email, password });
   if (error) {
-    return res.render("signUp", { error: "Invalid input. Please check your details." });
+    return res.render("signUp", {
+      error: "Invalid input. Please check your details.",
+    });
   }
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -127,7 +148,6 @@ app.post("/signupSubmit", async (req, res) => {
 });
 
 // login
-
 app.get("/loginPage", (req, res) => {
   res.render("loginPage", { error: null });
 });
@@ -142,7 +162,9 @@ app.post("/loginSubmit", async (req, res) => {
 
   const { error } = schema.validate({ email, password });
   if (error) {
-    return res.render("loginPage", { error: "Please enter a valid email and password." });
+    return res.render("loginPage", {
+      error: "Please enter a valid email and password.",
+    });
   }
 
   // TODO: Replace with a PostgreSQL SELECT query
@@ -154,13 +176,17 @@ app.post("/loginSubmit", async (req, res) => {
   // const user = await "POSTGRES_FIND_USER_BY_EMAIL"(email);
 
   if (!user) {
-    return res.render("loginPage", { error: "Invalid email/password combination." });
+    return res.render("loginPage", {
+      error: "Invalid email/password combination.",
+    });
   }
 
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (!passwordMatch) {
-    return res.render("loginPage", { error: "Invalid email/password combination." });
+    return res.render("loginPage", {
+      error: "Invalid email/password combination.",
+    });
   }
 
   req.session.authenticated = true;
@@ -175,7 +201,6 @@ app.post("/loginSubmit", async (req, res) => {
 });
 
 // logout
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
