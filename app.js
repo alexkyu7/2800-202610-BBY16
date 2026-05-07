@@ -7,6 +7,14 @@ const Joi = require("joi");
 const path = require("path");
 const ejs = require("ejs");
 
+
+require('./db/connection');
+
+const serviceRoutes = require('./routes/services');
+// const categoryRoutes = require('./routes/categories');
+// const favouriteRoutes = require('./routes/favourites');
+// const userRoutes = require('./routes/users');
+
 // TODO: Replace with your PostgreSQL client import
 // e.g. const { Pool } = require("pg");
 // const POSTGRES_CLIENT = null;
@@ -21,6 +29,12 @@ const expireTime = 1 * 60 * 60 * 1000;
 app.set("trust proxy", 1);
 
 app.set("view engine", "ejs");
+
+app.use(express.json());
+app.use('/services', serviceRoutes);
+// app.use('/categories', categoryRoutes);
+// app.use('/favourites', favouriteRoutes);
+// app.use('/users', userRoutes);
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
