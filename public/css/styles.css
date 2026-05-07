@@ -151,6 +151,11 @@ input, select, button {
     border-radius:10px;
 }
 
+.navicon {
+    width: 5vw;
+    height: auto;
+}
+
 .auth {
     display: grid;
     place-items: center;
@@ -194,7 +199,7 @@ footer .mobile {
     bottom: 0;
     background: var(--card);
     border-bottom:1px solid var(--border);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: space-between;
     padding:14px 24px;
@@ -216,9 +221,10 @@ footer .mobile {
     gap:16px;
     }
 
-    .navbar .mobile {
+    footer .mobile {
     position: fixed;
     top:auto;
+    width: 100vw;
     bottom: 0;
     background: var(--card);
     border-bottom:1px solid var(--border);
