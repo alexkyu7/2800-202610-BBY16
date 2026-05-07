@@ -11,13 +11,12 @@ const ejs = require("ejs");
 require('./db/connection');
 
 const serviceRoutes = require('./routes/services');
-// const categoryRoutes = require('./routes/categories');
-// const favouriteRoutes = require('./routes/favourites');
-// const userRoutes = require('./routes/users');
+const categoryRoutes = require('./routes/categories');
+const favouriteRoutes = require('./routes/favourites');
+const userRoutes = require('./routes/users');
 
-// TODO: Replace with your PostgreSQL client import
-// e.g. const { Pool } = require("pg");
-// const POSTGRES_CLIENT = null;
+const pool = require('./db/connection');
+const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 const port = 3000;
@@ -32,9 +31,9 @@ app.set("view engine", "ejs");
 
 app.use(express.json());
 app.use('/services', serviceRoutes);
-// app.use('/categories', categoryRoutes);
-// app.use('/favourites', favouriteRoutes);
-// app.use('/users', userRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/favourites', favouriteRoutes);
+app.use('/users', userRoutes);
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
@@ -46,17 +45,17 @@ app.use(
     resave: false,
     saveUninitialized: false,
 
-    // TODO: Replace with a PostgreSQL-compatible session store
-    // e.g. connect-pg-simple: const pgSession = require("connect-pg-simple")(session);
-    // store: new pgSession({ pool: POSTGRES_CLIENT, tableName: "POSTGRES_SESSIONS_TABLE" })
-    // store: "POSTGRES_SESSION_STORE",
+    store: new pgSession({
+      pool: pool,
+      tableName: "user_sessions"
+    }),
 
     cookie: {
       maxAge: expireTime,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
-  }),
+  })
 );
 
 // helper
@@ -143,22 +142,32 @@ app.post("/signupSubmit", async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  // TODO: Replace with a PostgreSQL INSERT query
-  // e.g. await POSTGRES_CLIENT.query(
-  //   "INSERT INTO POSTGRES_USERS_TABLE (name, email, password) VALUES ($1, $2, $3)",
-  //   [name, email, hashedPassword]
-  // );
-  // await "POSTGRES_INSERT_NEW_USER"({ name, email, password: hashedPassword });
+  try {
+    await pool.query(
+      `
+      INSERT INTO foodle_db.users
+      (name, email, password_hash)
+      VALUES ($1, $2, $3)
+      `,
+      [name, email, hashedPassword]
+    );
 
-  req.session.authenticated = true;
-  req.session.name = name;
-  req.session.email = email;
-  req.session.cookie.maxAge = expireTime;
+    req.session.authenticated = true;
+    req.session.name = name;
+    req.session.email = email;
+    req.session.cookie.maxAge = expireTime;
 
-  req.session.save((err) => {
-    if (err) console.error("Session save error:", err);
-    res.redirect("/mainPage");
-  });
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/mainPage");
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.render("signUp", {
+      error: "Unable to create account."
+    });
+  }
 });
 
 // login
@@ -181,37 +190,43 @@ app.post("/loginSubmit", async (req, res) => {
     });
   }
 
-  // TODO: Replace with a PostgreSQL SELECT query
-  // e.g. const result = await POSTGRES_CLIENT.query(
-  //   "SELECT * FROM POSTGRES_USERS_TABLE WHERE email = $1",
-  //   [email]
-  // );
-  // const user = result.rows[0];
-  // const user = await "POSTGRES_FIND_USER_BY_EMAIL"(email);
+  try {
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM foodle_db.users
+      WHERE email = $1
+      `,
+      [email]
+    );
 
-  if (!user) {
-    return res.render("loginPage", {
-      error: "Invalid email/password combination.",
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.render("loginPage", { error: "Invalid email/password combination." });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordMatch) {
+      return res.render("loginPage", { error: "Invalid email/password combination." });
+    }
+
+    req.session.authenticated = true;
+    req.session.name = user.name;
+    req.session.email = user.email;
+    req.session.cookie.maxAge = expireTime;
+
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/mainPage");
+    });
+  } catch (err) {
+    console.error(err);
+    res.render("loginPage", {
+      error: "Login failed."
     });
   }
-
-  const passwordMatch = await bcrypt.compare(password, user.password);
-
-  if (!passwordMatch) {
-    return res.render("loginPage", {
-      error: "Invalid email/password combination.",
-    });
-  }
-
-  req.session.authenticated = true;
-  req.session.name = user.name;
-  req.session.email = user.email;
-  req.session.cookie.maxAge = expireTime;
-
-  req.session.save((err) => {
-    if (err) console.error("Session save error:", err);
-    res.redirect("/mainPage");
-  });
 });
 
 // logout
