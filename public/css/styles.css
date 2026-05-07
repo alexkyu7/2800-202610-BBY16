@@ -9,8 +9,8 @@
 
 * {
     box-sizing: border-box;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -26,92 +26,96 @@ a {
 
 .navbar {
     position: sticky;
-    top:0;
+    top: 0;
     background: var(--card);
-    border-bottom:1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding:14px 24px;
-    gap:16px;
+    padding: 14px 24px;
+    gap: 16px;
 }
 
 .navbar nav {
     display: flex;
     align-items: center;
-    gap:16px;
+    gap: 16px;
+}
+
+.navbar .mobile {
+    display: none;
 }
 
 .brand {
-    font-weight:700;
+    font-weight: 700;
 }
 
 .navbar a.active {
-    font-weight:700;
+    font-weight: 700;
 }
 
 .container {
-    max-width:1100px;
-    margin:24px auto;
-    padding:024px 40px;
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 024px 40px;
 }
 
 .hero {
     display: grid;
-    grid-template-columns:1.2fr 0.8fr;
-    gap:24px;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
     align-items: center;
 }
 
 .hero-card {
     background: var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
     display: grid;
-    gap:10px;
+    gap: 10px;
 }
 
 .hero-actions {
     display: flex;
-    gap:12px;
-    margin-top:12px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 .grid {
-    margin-top:24px;
+    margin-top: 24px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap:16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
 }
 
 .card {
     background: var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
     display: grid;
-    gap:10px;
+    gap: 10px;
 }
 
 .search-bar {
     display: grid;
-    grid-template-columns:2fr 1fr 1fr auto;
-    gap:12px;
-    margin:16px 024px;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 12px;
+    margin: 16px 024px;
 }
 
 .map {
     display: grid;
-    grid-template-columns:2fr 1fr;
-    gap:16px;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
 }
 
 .map-placeholder {
     background: #e9eef5;
-    border:1px solid var(--border);
-    border-radius:12px;
-    min-height:340px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    min-height: 340px;
     display: grid;
     place-items: center;
     color: var(--muted);
@@ -120,14 +124,16 @@ a {
 .map-list ul {
     list-style: none;
     display: grid;
-    gap:8px;
+    gap: 8px;
 }
 
-input, select, button {
-    padding:10px 12px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    font-size:14px;
+input,
+select,
+button {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 14px;
 }
 
 .btn {
@@ -135,15 +141,105 @@ input, select, button {
     color: #fff;
     border: none;
     cursor: pointer;
-    padding:10px 14px;
-    border-radius:10px;
+    padding: 10px 14px;
+    border-radius: 10px;
 }
 
 .btn-outline {
     background: transparent;
-    border:1px solid var(--primary);
+    border: 1px solid var(--primary);
     color: var(--primary);
-    padding:10px 14px;
-    border-radius:10px;
+    padding: 10px 14px;
+    border-radius: 10px;
 }
 
+.navicon {
+    width: 5vw;
+    height: auto;
+}
+
+.auth {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+}
+
+.auth-card form {
+    display: grid;
+    gap: 10px;
+}
+
+.auth-footer {
+    color: var(--muted);
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    text-align: center;
+    top: auto;
+    position: fixed;
+    bottom: 0;
+
+    p {
+        margin: 1em;
+    }
+}
+
+footer .mobile {
+    display: none;
+}
+
+.mobile {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+
+    .navbar .desktop {
+        display: none;
+    }
+
+    footer .mobile {
+        position: sticky;
+        width: 100vw;
+        bottom: 0;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        gap: 16px;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+
+        .mobile {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .navbar nav {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+}
