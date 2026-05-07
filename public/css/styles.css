@@ -190,6 +190,9 @@ footer {
     top: auto;
     position: fixed;
     bottom: 0;
+    p{
+        margin: 1em;
+    }
 }
 
 footer .mobile {
@@ -222,8 +225,7 @@ footer .mobile {
     }
 
     footer .mobile {
-    position: fixed;
-    top:auto;
+    position: sticky;
     width: 100vw;
     bottom: 0;
     background: var(--card);
