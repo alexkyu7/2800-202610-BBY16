@@ -42,6 +42,10 @@ a {
     gap:16px;
 }
 
+.navbar .mobile {
+    display: none;
+}
+
 .brand {
     font-weight:700;
 }
@@ -171,4 +175,64 @@ input, select, button {
 
 .auth-footer {
     color: var(--muted);
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    text-align: center;
+    top: auto;
+    position: fixed;
+    bottom: 0;
+}
+
+footer .mobile {
+    position: fixed;
+    top:auto;
+    width: 100vw;
+    bottom: 0;
+    background: var(--card);
+    border-bottom:1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:14px 24px;
+    gap:16px;
+    }
+
+@media (max-width: 768px) {
+
+    .navbar .desktop {
+    position: sticky;
+    top:0;
+    background: var(--card);
+    border-bottom:1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+    padding:14px 24px;
+    gap:16px;
+    }
+
+    .navbar .mobile {
+    position: fixed;
+    top:auto;
+    bottom: 0;
+    background: var(--card);
+    border-bottom:1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:14px 24px;
+    gap:16px;
+    }
+
+.navbar nav {
+    display: flex;
+    align-items: center;
+    gap:16px;
+}
+    
 }
