@@ -89,8 +89,27 @@ app.get("/accountPage", (req, res) => {
   res.render("accountPage", { title: "Account" });
 });
 
-// signup
+app.get("/foodBanks", (req, res) => {
+  res.render("foodBanks", { title: "Food Banks" });
+});
 
+app.get("/communityFridges", (req, res) => {
+  res.render("communityFridges", { title: "Community Fridges" });
+});
+
+app.get("/mealPrograms", (req, res) => {
+  res.render("mealPrograms", { title: "Meal Programs" });
+});
+
+app.get("/foodRecycling", (req, res) => {
+  res.render("foodRecycling", { title: "Food Recycling" });
+});
+
+app.get("/otherServices", (req, res) => {
+  res.render("otherServices", { title: "Other Services" });
+});
+
+// signup
 app.get("/signup", (req, res) => {
   res.render("signUp", { error: null });
 });
@@ -116,7 +135,9 @@ app.post("/signupSubmit", async (req, res) => {
 
   const { error } = schema.validate({ name, email, password });
   if (error) {
-    return res.render("signUp", { error: "Invalid input. Please check your details." });
+    return res.render("signUp", {
+      error: "Invalid input. Please check your details.",
+    });
   }
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -150,7 +171,6 @@ app.post("/signupSubmit", async (req, res) => {
 });
 
 // login
-
 app.get("/loginPage", (req, res) => {
   res.render("loginPage", { error: null });
 });
@@ -165,7 +185,9 @@ app.post("/loginSubmit", async (req, res) => {
 
   const { error } = schema.validate({ email, password });
   if (error) {
-    return res.render("loginPage", { error: "Please enter a valid email and password." });
+    return res.render("loginPage", {
+      error: "Please enter a valid email and password.",
+    });
   }
 
   try {
@@ -208,7 +230,6 @@ app.post("/loginSubmit", async (req, res) => {
 });
 
 // logout
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
