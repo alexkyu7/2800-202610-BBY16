@@ -1,0 +1,62 @@
+<%- include('partials/header', { title, cssFiles }) %>
+
+  <main class="container">
+    <h1>Your Favorites</h1>
+
+    <p>View and manage your favourites</p>
+
+    <section class="grid">
+
+      <div class="card">
+        <img src="/images/foodbank.jpg" alt="Food Bank" width="100%">
+
+        <h3>Community Food Bank</h3>
+
+        <p>
+          Provides groceries and emergency food support for families
+          and individuals in need.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn">View Details</button>
+          <button class="btn-outline">Remove</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="/images/recycle.jpg" alt="Food Recycling" width="100%">
+
+        <h3>Food Recycling Program</h3>
+
+        <p>
+          Helps reduce food waste by connecting extra food with local
+          shelters and community organizations.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn">View Details</button>
+          <button class="btn-outline">Remove</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="/images/communitymeal.jpg" alt="Community Meal" width="100%">
+
+        <h3>Community Meal Service</h3>
+
+        <p>
+          Offers free hot meals and support services for people facing
+          food insecurity.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn">View Details</button>
+          <button class="btn-outline">Remove</button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <%- include('partials/footer') %>
