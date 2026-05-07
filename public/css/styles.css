@@ -189,8 +189,6 @@ footer {
     flex-direction: column;
     width: 100vw;
     text-align: center;
-    top: auto;
-    bottom: 0;
     .nav{
         position: fixed;
     }
@@ -212,6 +210,10 @@ footer .mobile {
 
     .navbar .desktop {
         display: none;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
     }
 
     .mobile_nav_container .mobile {
