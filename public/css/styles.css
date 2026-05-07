@@ -190,9 +190,10 @@ footer {
     width: 100vw;
     text-align: center;
     top: auto;
-    position: fixed;
     bottom: 0;
-
+    .nav{
+        position: fixed;
+    }
     p {
         margin: 1em;
     }
@@ -213,10 +214,11 @@ footer .mobile {
         display: none;
     }
 
-    footer .mobile {
-        position: sticky;
+    .mobile_nav_container .mobile {
+        position: fixed;
         width: 100vw;
         bottom: 0;
+        left: 0;
         background: var(--card);
         border-bottom: 1px solid var(--border);
         display: flex;
@@ -226,6 +228,10 @@ footer .mobile {
         gap: 16px;
     }
 
+    footer{
+        margin-bottom: 4em;
+    }
+
     .navbar {
         display: flex;
         justify-content: space-between;
@@ -233,6 +239,9 @@ footer .mobile {
         .mobile {
             display: flex;
             justify-content: space-between;
+            a{
+                margin-left: 0.5em;
+            }
         }
     }
 
