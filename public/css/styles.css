@@ -185,7 +185,7 @@ input, select, button {
 footer {
     display: flex;
     flex-direction: column;
-    width: 100vw;
+    width: 100%;
     text-align: center;
     top: auto;
     position: fixed;
@@ -212,21 +212,12 @@ footer .mobile {
 @media (max-width: 768px) {
 
     .navbar .desktop {
-    position: sticky;
-    top:0;
-    background: var(--card);
-    border-bottom:1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     display: none;
-    padding:14px 24px;
-    gap:16px;
     }
 
     footer .mobile {
     position: sticky;
-    width: 100vw;
+    width: 100%;
     bottom: 0;
     background: var(--card);
     border-bottom:1px solid var(--border);
