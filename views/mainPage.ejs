@@ -3,14 +3,14 @@
 <main class="container">
     <section class="hero">
         <div>
-            <h1 class="outbg_text">Find food help fast</h1>
-            <p class="outbg_text">Discover food banks, community fridges, meal programs, and food recycling near you.</p>
+            <h1>Find food help fast</h1>
+            <p>Discover food banks, community fridges, meal programs, and food recycling near you.</p>
             <div class="hero-actions">
-                <a class="btn" href="/searchPage">Start searching</a>
-                <a class="btn-outline" href="/mapPage">View map</a>
+                <a class="btn" href="/searchPage" id="tut-search-btn">Start searching</a>
+                <a class="btn-outline" href="/mapPage" id="tut-map-btn">View map</a>
             </div>
         </div>
-        <div class="hero-card">
+        <div class="hero-card" id="tut-quick-search">
             <h3>Quick search</h3>
             <label for="location">Location</label>
             <input id="location" type="text" placeholder="City or postal code">
@@ -20,33 +20,61 @@
                 <option>Meal program</option>
                 <option>Community fridge</option>
                 <option>Food recycling</option>
-                <option>Other</option>
             </select>
             <button class="btn">Find now</button>
         </div>
     </section>
 
-    <section class="grid">
+    <section class="grid" id="tut-categories">
         <article class="card">
-            <h4><a href="/foodBanks">Food banks</a></h4>
+            <h4>Food banks</h4>
             <p>Locate nearby pantries and pickup times.</p>
         </article>
         <article class="card">
-            <h4><a href="/mealPrograms">Meal programs</a></h4>
+            <h4>Meal programs</h4>
             <p>Hot meals from local community partners.</p>
         </article>
         <article class="card">
-            <h4><a href="/communityFridges">Community fridges</a></h4>
+            <h4>Community fridges</h4>
             <p>24/7 access to shared food.</p>
         </article>
         <article class="card">
-            <h4><a href="/foodRecycling">Food recycling</a></h4>
+            <h4>Food recycling</h4>
             <p>Redistribute surplus food safely.</p>
-        </article>
-        <article class="card">
-            <h4><a href="/otherServices">Other services</a></h4>
-            <p>Additional food support resources.</p>
         </article>
     </section>
 </main>
+
+<!-- Tutorial restart button (testing) -->
+<button id="tut-restart-btn" title="Restart tutorial" aria-label="Restart tutorial">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+    </svg>
+    Tour
+</button>
+
 <%- include('partials/footer') %>
+
+<!-- Tutorial overlay -->
+<div id="tut-backdrop"></div>
+
+<div id="tut-modal" role="dialog" aria-modal="true" aria-labelledby="tut-title">
+    <div id="tut-arrow"></div>
+    <div id="tut-inner">
+        <div id="tut-header">
+            <span id="tut-step-label"></span>
+            <button id="tut-skip-btn" aria-label="Skip tutorial">Skip tour</button>
+        </div>
+        <h2 id="tut-title"></h2>
+        <p id="tut-body"></p>
+        <div id="tut-footer">
+            <div id="tut-dots"></div>
+            <div id="tut-nav">
+                <button id="tut-prev-btn">&#8592; Back</button>
+                <button id="tut-next-btn">Next &#8594;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/mainPageTut.js" defer></script>
