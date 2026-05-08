@@ -1,0 +1,36 @@
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.profile-form {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-info {
+  display: grid;
+  gap: 16px;
+}
+
+.info-row {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.info-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--muted);
+}
