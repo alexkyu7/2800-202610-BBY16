@@ -96,7 +96,6 @@ app.get("/favouritePage", (req, res) => {
    });
 });
 
-// signup
 app.get("/foodBanks", (req, res) => {
   res.render("foodBanks", { title: "Food Banks" });
 });
@@ -115,6 +114,13 @@ app.get("/foodRecycling", (req, res) => {
 
 app.get("/otherServices", (req, res) => {
   res.render("otherServices", { title: "Other Services" });
+});
+
+app.get("/profilePage", (req, res) => {
+  res.render("profilePage", { 
+    title: "Profile",
+    cssFiles: ["/css/profile.css"]
+   });
 });
 
 // signup
