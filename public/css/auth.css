@@ -1,0 +1,25 @@
+.auth {
+    display: grid;
+    place-items: center;
+    min-height:100vh;
+}
+
+.auth-card {
+    width:100%;
+    max-width:420px;
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:24px;
+    display: grid;
+    gap:12px;
+}
+
+.auth-card form {
+    display: grid;
+    gap:10px;
+}
+
+.auth-footer {
+    color: var(--muted);
+}

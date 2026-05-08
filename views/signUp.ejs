@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth">
+<main class="auth-card">
+  <h1>Sign up</h1>
+  <p>Create your account.</p>
+
+  <% if (error) { %>
+    <p class="auth-error"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/signupSubmit">
+    <label for="name">Full name</label>
+    <input id="name" name="name" type="text" autocomplete="name" required>
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="new-password" required>
+
+    <button class="btn" type="submit">Create account</button>
+  </form>
+  <p class="auth-footer">Already have an account? <a href="/loginPage">Log in</a></p>
+</main>
+<a href="/" class="btn-secondary">← Back to Home</a>
+<%- include('partials/footer') %>

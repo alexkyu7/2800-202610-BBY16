@@ -1,0 +1,83 @@
+<%- include('partials/header', { title, cssFiles }) %>
+
+    <main class="container">
+
+        <section class="profile-header card">
+            <div>
+                <h1>Your Profile</h1>
+                <p>View your profile information and manage preferences</p>
+            </div>
+
+            <img src="/images/profile-placeholder.jpg" alt="Profile Picture" class="profile-avatar">
+        </section>
+
+        <section class="grid">
+
+            <!-- Profile Info -->
+            <!-- In a actual app, this would be dynamically generated from the user's data -->
+            <div class="card">
+                <h2>Profile Info</h2>
+
+                <div class="profile-info">
+
+                    <div class="info-row">
+                        <span class="info-label">Full Name</span>
+                        <p>Alex Lee</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Email Address</span>
+                        <p>alex@email.com</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Phone Number</span>
+                        <p>(604) 123-4567</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Address</span>
+                        <p>Burnaby, BC</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="card">
+                <h2>Preferences</h2>
+
+                <form class="profile-form">
+
+                    <label for="notifications">
+                        Email Notifications
+                    </label>
+
+                    <select id="notifications" name="notifications">
+                        <option value="enabled">Enabled</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+
+                    <label for="language">
+                        Language
+                    </label>
+
+                    <select id="language" name="language">
+                        <option value="english">English</option>
+                        <option value="french">French</option>
+                    </select>
+
+                    <div class="hero-actions">
+                        <button type="submit" class="btn">
+                            Update Preferences
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+
+    <%- include('partials/footer') %>

@@ -1,0 +1,22 @@
+<%- include('partials/header', { title }) %>
+
+<main class="container">
+  <h1 class="outbg_text">Account</h1>
+  <section class="grid">
+    <article class="card">
+      <h4>Profile</h4>
+      <p>Manage contact info and preferences.</p>
+      <button onclick="location.href='/profilePage'">Go to Profile</button>
+    </article>
+    <article class="card">
+      <h4>Saved services</h4>
+      <p>View and edit your saved list.</p>
+      <button onclick="location.href='/favouritePage'">Go to Favourites</button>
+    </article>
+    <article class="card">
+      <h4>Notifications</h4>
+      <p>Set alerts for nearby services.</p>
+    </article>
+  </section>
+</main>
+<%- include('partials/footer') %>
