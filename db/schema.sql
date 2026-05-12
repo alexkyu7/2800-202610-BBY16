@@ -152,7 +152,7 @@ CREATE TABLE stores (
 CREATE TABLE foodbank (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFUALT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- RECYCLING CENTERS — recycling centers specifically (a subset of services)
