@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
     <link rel="stylesheet" href="/css/styles.css">
 
-    <% if (typeof cssFiles !== 'undefined') { %>
+    <% if (typeof cssFiles !=='undefined' ) { %>
         <% cssFiles.forEach(function(cssFile) { %>
             <link rel="stylesheet" href="<%= cssFile %>">
-        <% }); %>
-    <% } %>
-    <link rel="icon" href="/img/favicon.ico">
+            <% }); %>
+                <% } %>
+                    <link rel="icon" href="/img/favicon.ico">
 </head>
 
 <body>
     <header class="navbar">
-        <div class="brand">Food\+ Portal</div>
+        <div class="brand">
+            <img src="/img/foodle_logo.png" alt="Foodle">
+        </div>
         <nav class="desktop">
             <a href="/mainPage" class="active">Home</a>
             <a href="/searchPage">Search</a>
