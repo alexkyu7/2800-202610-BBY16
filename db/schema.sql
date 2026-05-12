@@ -16,9 +16,6 @@ CREATE TABLE services (
     -- Existing type field kept for compatibility
     type VARCHAR(50) NOT NULL,
 
-    -- Home page URL for the service, if available
-    homepage_url TEXT,
-
     -- Original address kept
     address TEXT,
 
