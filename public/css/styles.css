@@ -221,7 +221,6 @@ footer {
   width: 100vw;
   text-align: center;
   top: auto;
-  position: fixed;
   bottom: 0;
 
   p {
@@ -480,4 +479,114 @@ footer .mobile {
 }
 #tut-next-btn.finish:hover {
   background: #1558b0;
+
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+.navicon {
+    width: 5vw;
+    height: auto;
+}
+
+.auth {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+}
+
+.auth-card form {
+    display: grid;
+    gap: 10px;
+}
+
+.auth-footer {
+    color: var(--muted);
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    text-align: center;
+    .nav{
+        position: fixed;
+    }
+    p {
+        margin: 1em;
+    }
+}
+
+footer .mobile {
+    display: none;
+}
+
+.mobile {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+
+    .navbar .desktop {
+        display: none;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile_nav_container .mobile {
+        position: fixed;
+        width: 100vw;
+        bottom: 0;
+        left: 0;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        gap: 16px;
+    }
+
+    footer{
+        margin-bottom: 4em;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+
+        .mobile {
+            display: flex;
+            justify-content: space-between;
+            a{
+                margin-left: 0.5em;
+            }
+        }
+    }
+
+    .navbar nav {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
 }
