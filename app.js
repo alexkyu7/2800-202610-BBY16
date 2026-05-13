@@ -249,6 +249,12 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.use((req, res) => {
+  res.status(404).render("404", {
+     title: "Page Not Found",
+    cssFiles: ["/css/404.css"]});
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
