@@ -78,7 +78,10 @@ app.get("/searchPage", (req, res) => {
 });
 
 app.get("/mapPage", (req, res) => {
-  res.render("mapPage", { title: "Map View" });
+  res.render("mapPage", { 
+    title: "Map View",
+    cssFiles: ["/css/map.css"]
+   });
 });
 
 app.get("/cartPage", (req, res) => {

@@ -1,9 +1,10 @@
-<%- include('partials/header', { title }) %>
+<%- include('partials/header', { title, cssFiles }) %>
 
 <main class="container">
   <h1 class="outbg_text">Map view</h1>
   <div class="map">
-    <div class="map-placeholder">Map placeholder</div>
+    <div id="map">
+    </div>
     <aside class="map-list">
       <h2 class="outbg_text">Nearby services</h2> <br>
       <ul class="outbg_text">
@@ -14,4 +15,13 @@
     </aside>
   </div>
 </main>
+
+<script>
+  var map = L.map('map').setView([49.28, -123.12], 13);
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+</script>
 <%- include('partials/footer') %>
