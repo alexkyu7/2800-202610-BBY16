@@ -1,0 +1,11 @@
+<% if (services.length === 0) { %>
+  <p>No services found matching your filters.</p>
+<% } else { %>
+  <% services.forEach(service => { %>
+    <div class="service-card">
+      <h2><%= service.name %></h2>
+      <p><%= service.type %></p>
+      <p><%= service.address %></p>
+    </div>
+  <% }) %>
+<% } %>
