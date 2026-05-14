@@ -29,22 +29,11 @@
                         <p>alex@email.com</p>
                     </div>
 
-                    <div class="info-row">
-                        <span class="info-label">Phone Number</span>
-                        <p>(604) 123-4567</p>
-                    </div>
-
-                    <div class="info-row">
-                        <span class="info-label">Address</span>
-                        <p>Burnaby, BC</p>
-                    </div>
                     <button class="btn edit-btn">
                         Edit Profile
                     </button>
-
                 </div>
             </div>
-
         </section>
 
         <section class="grid">
@@ -52,7 +41,6 @@
                 <h2>Preferences</h2>
 
                 <form class="profile-form">
-
                     <label for="notifications">
                         Email Notifications
                     </label>
@@ -62,16 +50,27 @@
                         <option value="disabled">Disabled</option>
                     </select>
 
+                    <label for="dietarys">
+                        Dietary preferences
+                    </label>
+
+                    <select id="dietary" name="dietary">
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="halal">Halal</option>
+                        <option value="pescetarian">Pescetarian</option>
+                        <option value="gluten-free">Gluten Free</option>
+                        <option value="none">None</option>
+                    </select>
+
                     <div class="hero-actions">
                         <button type="submit" class="btn">
                             Update Preferences
                         </button>
                     </div>
-
                 </form>
             </div>
         </section>
-
     </main>
 
     <%- include('partials/footer') %>
