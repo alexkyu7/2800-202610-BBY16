@@ -8,12 +8,12 @@ const path = require("path");
 const ejs = require("ejs");
 
 
-require('./db/connection');
 
 const serviceRoutes = require('./routes/services');
 const categoryRoutes = require('./routes/categories');
 const favouriteRoutes = require('./routes/favourites');
 const userRoutes = require('./routes/users');
+const aiSearchRoutes = require('./routes/aiSearch');
 
 const pool = require('./db/connection');
 const pgSession = require('connect-pg-simple')(session);
@@ -34,6 +34,7 @@ app.use('/services', serviceRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/favourites', favouriteRoutes);
 app.use('/users', userRoutes);
+app.use('/aiSearch', aiSearchRoutes);
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
@@ -47,7 +48,9 @@ app.use(
 
     store: new pgSession({
       pool: pool,
-      tableName: "user_sessions"
+      schemaName: "public",
+      tableName: "user_sessions",
+      createTableIfMissing: true
     }),
 
     cookie: {
@@ -121,6 +124,10 @@ app.get("/profilePage", (req, res) => {
     title: "Profile",
     cssFiles: ["/css/profile.css"]
    });
+});
+
+app.get("/aiSearchPage", (req, res) => {
+  res.render("aiSearchPage", { title: "AI Deal Finder" });
 });
 
 // signup
@@ -247,12 +254,6 @@ app.post("/loginSubmit", async (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
-});
-
-app.use((req, res) => {
-  res.status(404).render("404", {
-     title: "Page Not Found",
-    cssFiles: ["/css/404.css"]});
 });
 
 app.listen(port, () => {

@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const {
-            username,
+            name,
             email,
             password_hash
         } = req.body;
@@ -31,11 +31,11 @@ router.post('/', async (req, res) => {
         const result = await pool.query(
             `
             INSERT INTO foodle_db.users
-            (username, email, password_hash)
+            (name, email, password_hash)
             VALUES ($1, $2, $3)
             RETURNING *
             `,
-            [username, email, password_hash]
+            [name, email, password_hash]
         );
 
         res.status(201).json(result.rows[0]);
