@@ -1,0 +1,200 @@
+<%- include('partials/header', { title }) %>
+
+<main class="container ai-search-container">
+
+    <div class="ai-search-header">
+        <h1>AI Deal Finder</h1>
+        <p class="ai-search-subtitle">Enter a location and our AI will find and rank nearby food services from most deals to least.</p>
+    </div>
+
+    <div class="ai-search-form-card">
+        <div class="ai-search-form-row">
+            <div class="ai-search-field">
+                <label for="ai-location">Location <span class="ai-required">*</span></label>
+                <input
+                    type="text"
+                    id="ai-location"
+                    placeholder="e.g. Surrey, Vancouver, V3T 0A1"
+                    autocomplete="off"
+                />
+            </div>
+            <div class="ai-search-field">
+                <label for="ai-query">Extra details <span class="ai-optional">(optional)</span></label>
+                <input
+                    type="text"
+                    id="ai-query"
+                    placeholder="e.g. free meals, seniors discounts"
+                />
+            </div>
+            <button class="btn ai-search-btn" id="ai-search-submit">
+                <svg id="ai-btn-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span id="ai-btn-label">Find Deals</span>
+            </button>
+        </div>
+        <p class="ai-search-note">
+            &#10022; Results are ranked by discounts and deals using AI — always confirm details directly with the service.
+        </p>
+    </div>
+
+    <!-- Error banner (hidden by default) -->
+    <div class="ai-error" id="ai-error" style="display:none;"></div>
+
+    <!-- Loading state (hidden by default) -->
+    <div class="ai-loading" id="ai-loading" style="display:none;">
+        <div class="ai-spinner"></div>
+        <p>AI is ranking services by deals&hellip;</p>
+    </div>
+
+    <!-- Results area (hidden until a search is run) -->
+    <div id="ai-results-area" style="display:none;">
+        <div class="ai-results-header">
+            <h2>Results</h2>
+            <p class="ai-summary" id="ai-summary"></p>
+        </div>
+        <div class="ai-results-list" id="ai-results-list"></div>
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>
+
+<script>
+(function () {
+    var submitButton  = document.getElementById('ai-search-submit');
+    var buttonLabel   = document.getElementById('ai-btn-label');
+    var buttonIcon    = document.getElementById('ai-btn-icon');
+    var locationInput = document.getElementById('ai-location');
+    var queryInput    = document.getElementById('ai-query');
+    var errorBanner   = document.getElementById('ai-error');
+    var loadingArea   = document.getElementById('ai-loading');
+    var resultsArea   = document.getElementById('ai-results-area');
+    var summaryText   = document.getElementById('ai-summary');
+    var resultsList   = document.getElementById('ai-results-list');
+
+    submitButton.addEventListener('click', runSearch);
+    locationInput.addEventListener('keydown', function (keyEvent) {
+        if (keyEvent.key === 'Enter') runSearch();
+    });
+
+    function runSearch() {
+        var locationValue = locationInput.value.trim();
+
+        if (!locationValue) {
+            showError('Please enter a location to search.');
+            return;
+        }
+
+        setLoadingState(true);
+
+        fetch('/aiSearch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                location: locationValue,
+                query: queryInput.value.trim()
+            })
+        })
+        .then(function (serverResponse) { return serverResponse.json(); })
+        .then(function (responseData) {
+            setLoadingState(false);
+            if (responseData.error) {
+                showError(responseData.error);
+                return;
+            }
+            renderResults(responseData);
+        })
+        .catch(function () {
+            setLoadingState(false);
+            showError('Could not reach the server. Please check your connection and try again.');
+        });
+    }
+
+    function renderResults(responseData) {
+        errorBanner.style.display = 'none';
+        summaryText.textContent   = responseData.summary || '';
+        resultsList.innerHTML     = '';
+
+        if (!responseData.results || responseData.results.length === 0) {
+            resultsList.innerHTML = '<p style="color:var(--muted);font-size:14px;">No results to display.</p>';
+        } else {
+            responseData.results.forEach(function (serviceResult, resultIndex) {
+                resultsList.appendChild(buildResultCard(serviceResult, resultIndex));
+            });
+        }
+
+        resultsArea.style.display = 'block';
+        resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function buildResultCard(serviceResult, resultIndex) {
+        var card = document.createElement('div');
+        card.className = 'ai-result-card';
+
+        var rankBadge = document.createElement('span');
+        rankBadge.className = 'ai-result-rank';
+        rankBadge.textContent = '#' + (resultIndex + 1);
+
+        var name = document.createElement('div');
+        name.className = 'ai-result-name';
+        name.textContent = serviceResult.name || 'Unnamed service';
+
+        var category = document.createElement('div');
+        category.className = 'ai-result-category';
+        category.textContent = serviceResult.category || '';
+
+        var discount = document.createElement('div');
+        discount.className = 'ai-result-discount';
+        discount.textContent = '\uD83C\uDFF7 ' + (serviceResult.discountHighlight || 'No specific discounts listed');
+
+        var address = document.createElement('div');
+        address.className = 'ai-result-address';
+        address.textContent = serviceResult.address || '';
+
+        card.appendChild(rankBadge);
+        card.appendChild(name);
+        card.appendChild(category);
+        card.appendChild(discount);
+        card.appendChild(address);
+
+        if (serviceResult.phone || serviceResult.website) {
+            var links = document.createElement('div');
+            links.className = 'ai-result-links';
+
+            if (serviceResult.phone) {
+                var phoneLink = document.createElement('a');
+                phoneLink.href = 'tel:' + serviceResult.phone;
+                phoneLink.textContent = serviceResult.phone;
+                links.appendChild(phoneLink);
+            }
+            if (serviceResult.website) {
+                var siteLink = document.createElement('a');
+                siteLink.href = serviceResult.website;
+                siteLink.target = '_blank';
+                siteLink.rel = 'noopener noreferrer';
+                siteLink.textContent = 'Visit website';
+                links.appendChild(siteLink);
+            }
+            card.appendChild(links);
+        }
+
+        return card;
+    }
+
+    function setLoadingState(isLoading) {
+        submitButton.disabled    = isLoading;
+        buttonLabel.textContent  = isLoading ? 'Searching\u2026' : 'Find Deals';
+        buttonIcon.style.display = isLoading ? 'none' : '';
+        loadingArea.style.display  = isLoading ? 'flex'  : 'none';
+        if (isLoading) resultsArea.style.display = 'none';
+        errorBanner.style.display = 'none';
+    }
+
+    function showError(errorMessage) {
+        errorBanner.textContent   = errorMessage;
+        errorBanner.style.display = 'block';
+        resultsArea.style.display = 'none';
+    }
+})();
+</script>

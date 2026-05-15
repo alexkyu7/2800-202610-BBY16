@@ -1,0 +1,31 @@
+.page-404 {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-404 .card {
+  text-align: center;
+  padding: 48px 32px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  max-width: 480px;
+  width: 60%;
+}
+
+.page-404 h1 {
+  font-size: 32px;
+  color: #d93025;
+}
+
+.page-404 .btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: var(--primary);
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+}

@@ -1,0 +1,22 @@
+<form method="GET" action="/services">
+  <select name="type">
+    <option value="">All types</option>
+    <option value="food_bank">Food Bank</option>
+    <option value="grocery">Grocery Store</option>
+    <option value="meal_program">Meal Program</option>
+    <option value="soup_kitchen">Soup Kitchen</option>
+  </select>
+  <select name="dietary">
+    <option value="">No preference</option>
+    <option value="halal">Halal</option>
+    <option value="vegan">Vegan</option>
+    <option value="vegetarian">Vegetarian</option>
+    <option value="gluten_free">Gluten-Free</option>
+    <option value="dairy_free">Dairy-Free</option>
+    <option value="nut_free">Nut-Free</option>
+    <option value="at_request">
+      At Request (Vendor meets client requirements at request)
+    </option>
+  </select>
+  <button type="submit">Filter</button>
+</form>
