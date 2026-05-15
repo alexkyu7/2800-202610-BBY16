@@ -5,17 +5,26 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const path = require("path");
-const ejs = require("ejs");
+const { Pool } = require("pg");
 
-
-require('./db/connection');
+const { supabase } = require('./db/connection');
 
 const serviceRoutes = require('./routes/services');
 const categoryRoutes = require('./routes/categories');
 const favouriteRoutes = require('./routes/favourites');
 const userRoutes = require('./routes/users');
+const aiSearchRoutes = require('./routes/aiSearch');
 
-const pool = require('./db/connection');
+// connect-pg-simple requires a real pg Pool for session storage.
+// We keep this separate from the Supabase client used for all other DB work.
+const pgPool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT, 10),
+});
+
 const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
@@ -26,7 +35,6 @@ const saltRounds = 12;
 const expireTime = 1 * 60 * 60 * 1000;
 
 app.set("trust proxy", 1);
-
 app.set("view engine", "ejs");
 
 app.use(express.json());
@@ -34,28 +42,29 @@ app.use('/services', serviceRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/favourites', favouriteRoutes);
 app.use('/users', userRoutes);
+app.use('/aiSearch', aiSearchRoutes);
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
-  session({
-    secret: process.env.NODE_SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    session({
+      secret: process.env.NODE_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
 
-    store: new pgSession({
-      pool: pool,
-      tableName: "user_sessions"
-    }),
+      store: new pgSession({
+        pool: pgPool,           // real pg Pool — this is what connect-pg-simple needs
+        tableName: "user_sessions"
+      }),
 
-    cookie: {
-      maxAge: expireTime,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    },
-  })
+      cookie: {
+        maxAge: expireTime,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      },
+    })
 );
 
 // helper
@@ -90,10 +99,10 @@ app.get("/accountPage", (req, res) => {
 });
 
 app.get("/favouritePage", (req, res) => {
-  res.render("favouritePage", { 
+  res.render("favouritePage", {
     title: "Favorites",
     cssFiles: ["/css/favorite.css"]
-   });
+  });
 });
 
 app.get("/foodBanks", (req, res) => {
@@ -117,10 +126,10 @@ app.get("/otherServices", (req, res) => {
 });
 
 app.get("/profilePage", (req, res) => {
-  res.render("profilePage", { 
+  res.render("profilePage", {
     title: "Profile",
     cssFiles: ["/css/profile.css"]
-   });
+  });
 });
 
 // signup
@@ -128,18 +137,16 @@ app.get("/signup", (req, res) => {
   res.render("signUp", { error: null });
 });
 
+app.get("/aiSearchPage", (req, res) => {
+  res.render("aiSearchPage", { title: "AI Deal Finder" });
+});
+
 app.post("/signupSubmit", async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name) {
-    return res.render("signUp", { error: "Name is required." });
-  }
-  if (!email) {
-    return res.render("signUp", { error: "Email is required." });
-  }
-  if (!password) {
-    return res.render("signUp", { error: "Password is required." });
-  }
+  if (!name) return res.render("signUp", { error: "Name is required." });
+  if (!email) return res.render("signUp", { error: "Email is required." });
+  if (!password) return res.render("signUp", { error: "Password is required." });
 
   const schema = Joi.object({
     name: Joi.string().max(50).required(),
@@ -149,22 +156,19 @@ app.post("/signupSubmit", async (req, res) => {
 
   const { error } = schema.validate({ name, email, password });
   if (error) {
-    return res.render("signUp", {
-      error: "Invalid input. Please check your details.",
-    });
+    return res.render("signUp", { error: "Invalid input. Please check your details." });
   }
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   try {
-    await pool.query(
-      `
-      INSERT INTO foodle_db.users
-      (name, email, password_hash)
-      VALUES ($1, $2, $3)
-      `,
-      [name, email, hashedPassword]
-    );
+    // Use the Supabase client instead of pool.query
+    const { error: dbError } = await supabase
+        // .schema('foodle_db')
+        .from('users')
+        .insert({ name, email, password_hash: hashedPassword });
+
+    if (dbError) throw dbError;
 
     req.session.authenticated = true;
     req.session.name = name;
@@ -177,10 +181,7 @@ app.post("/signupSubmit", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-
-    res.render("signUp", {
-      error: "Unable to create account."
-    });
+    res.render("signUp", { error: "Unable to create account." });
   }
 });
 
@@ -199,22 +200,21 @@ app.post("/loginSubmit", async (req, res) => {
 
   const { error } = schema.validate({ email, password });
   if (error) {
-    return res.render("loginPage", {
-      error: "Please enter a valid email and password.",
-    });
+    return res.render("loginPage", { error: "Please enter a valid email and password." });
   }
 
   try {
-    const result = await pool.query(
-      `
-      SELECT *
-      FROM foodle_db.users
-      WHERE email = $1
-      `,
-      [email]
-    );
+    // Use the Supabase client instead of pool.query
+    const { data: users, error: dbError } = await supabase
+        // .schema('foodle_db')
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .limit(1);
 
-    const user = result.rows[0];
+    if (dbError) throw dbError;
+
+    const user = users?.[0];
 
     if (!user) {
       return res.render("loginPage", { error: "Invalid email/password combination." });
@@ -237,9 +237,7 @@ app.post("/loginSubmit", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.render("loginPage", {
-      error: "Login failed."
-    });
+    res.render("loginPage", { error: "Login failed." });
   }
 });
 
@@ -251,8 +249,9 @@ app.get("/logout", (req, res) => {
 
 app.use((req, res) => {
   res.status(404).render("404", {
-     title: "Page Not Found",
-    cssFiles: ["/css/404.css"]});
+    title: "Page Not Found",
+    cssFiles: ["/css/404.css"]
+  });
 });
 
 app.listen(port, () => {

@@ -1,22 +1,16 @@
-// import { createClient } from "@supabase/supabase-js";
-// import dotenv from "dotenv";
-// dotenv.config();
-
-// const supabaseUrl = process.env.DATABASE_URL;
-// const supabaseKey = process.env.SUPABASE_API_KEY;
-
-// export const supabase = createClient(supabaseUrl, supabaseKey);
-
-// The above code is the original ES module version. Below is the CommonJS version for compatibility with Node.js without additional configuration.
-/**
- * Edited by Claude
- */
 const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config();
 
 const supabaseUrl = process.env.DATABASE_URL;
-const supabaseKey = process.env.SUPABASE_API_KEY;
+const supabaseAnonKey = process.env.SUPABASE_API_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Public client — uses the anon/publishable key, respects Row Level Security.
+// Targets the 'public' schema (Supabase default — no extra exposure needed).
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-module.exports = { supabase };
+// Admin client — uses the service role key, BYPASSES Row Level Security.
+// Never expose this key to the browser. Server-side use only.
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+module.exports = { supabase, supabaseAdmin };
