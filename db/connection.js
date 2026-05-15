@@ -1,22 +1,56 @@
-// import { createClient } from "@supabase/supabase-js";
-// import dotenv from "dotenv";
-// dotenv.config();
+// const { Pool } = require('pg');
 
-// const supabaseUrl = process.env.DATABASE_URL;
-// const supabaseKey = process.env.SUPABASE_API_KEY;
+// const pool = new Pool({
+//     user: process.env.DB_USER,
+//     host: process.env.DB_HOST,
+//     database: process.env.DB_NAME,
+//     password: process.env.DB_PASSWORD,
+//     port: process.env.DB_PORT
+// });
 
-// export const supabase = createClient(supabaseUrl, supabaseKey);
+// pool.connect((err) => {
+//     if (err) {
+//         console.error('Database connection error:', err.stack);
+//     } else {
+//         console.log('Connected to PostgreSQL database');
+//     }
+// });
 
-// The above code is the original ES module version. Below is the CommonJS version for compatibility with Node.js without additional configuration.
+// module.exports = pool;
+
+// import postgres from "postgres";
+
+// const connectionString = process.env.DATABASE_URL;
+// const sql = postgres(connectionString);
+
+// sql.connect((err) => {
+//   if (err) {
+//     console.error("Database connection error:", err.stack);
+//   } else {
+//     console.log("Connected to PostgreSQL database");
+//   }
+// });
+
+// export default sql;
+
 /**
- * Edited by Claude
+ * @author: Claude AI
  */
-const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config();
+const { Pool } = require("pg");
 
-const supabaseUrl = process.env.DATABASE_URL;
-const supabaseKey = process.env.SUPABASE_API_KEY;
+const pool = new Pool({
+  connectionString: process.env.DB_CONNECTION_STRING,
+  ssl: { rejectUnauthorized: false },
+});
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error("Database connection error:", err.stack);
+  } else {
+    console.log("Connected to PostgreSQL database");
+    release();
+  }
+});
 
-module.exports = { supabase };
+module.exports = pool;

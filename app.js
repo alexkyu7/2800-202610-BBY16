@@ -8,7 +8,6 @@ const path = require("path");
 const ejs = require("ejs");
 
 
-require('./db/connection');
 
 const serviceRoutes = require('./routes/services');
 const categoryRoutes = require('./routes/categories');
@@ -47,7 +46,9 @@ app.use(
 
     store: new pgSession({
       pool: pool,
-      tableName: "user_sessions"
+      schemaName: "public",
+      tableName: "user_sessions",
+      createTableIfMissing: true
     }),
 
     cookie: {
@@ -247,12 +248,6 @@ app.post("/loginSubmit", async (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
-});
-
-app.use((req, res) => {
-  res.status(404).render("404", {
-     title: "Page Not Found",
-    cssFiles: ["/css/404.css"]});
 });
 
 app.listen(port, () => {
