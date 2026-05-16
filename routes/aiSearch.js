@@ -1,3 +1,18 @@
+/**
+    Essentially everything I Ziad Malik used to create the AI feature,
+    was curated through extensive online research,
+    our webdev teacher Patrick showing us how it works,
+    and some help from ChatGPT (which I used to debug some of the more complex JS code and to help me understand how to call the OpenRouter API correctly).
+
+    The core idea is that when a user submits a search with a location and optional query,
+    we first query our own PostgreSQL database to get a list of relevant services.
+    Then, we send that list along with the user's query to the OpenRouter API,
+    asking it to rank the services based on discounts/deals and return a structured JSON response.
+    If the OpenRouter API call fails for any reason, we have a fallback mechanism that generates a simple ranked list based on the presence of discount information in our database.
+
+    The AI's response is then sent back to the frontend, where it can be displayed to the user in a friendly format.
+ */
+
 const express = require('express');
 const router  = express.Router();
 const pool    = require('../db/connection'); // direct pg Pool — pool.query() works natively
