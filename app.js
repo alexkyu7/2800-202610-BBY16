@@ -139,7 +139,7 @@ app.get("/aiSearchPage", (req, res) => {
 });
 
 // signup
-app.get("/signup", (req, res) => {
+app.get("/signUp", (req, res) => {
     res.render("signUp", { error: null });
 });
 
