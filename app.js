@@ -7,8 +7,6 @@ const Joi = require("joi");
 const path = require("path");
 const ejs = require("ejs");
 
-
-
 const serviceRoutes = require('./routes/services');
 const categoryRoutes = require('./routes/categories');
 const favouriteRoutes = require('./routes/favourites');
@@ -26,7 +24,6 @@ const saltRounds = 12;
 const expireTime = 1 * 60 * 60 * 1000;
 
 app.set("trust proxy", 1);
-
 app.set("view engine", "ejs");
 
 app.use(express.json());
@@ -41,25 +38,32 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
-  session({
-    secret: process.env.NODE_SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    session({
+      secret: process.env.NODE_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
 
-    store: new pgSession({
-      pool: pool,
-      schemaName: "public",
-      tableName: "user_sessions",
-      createTableIfMissing: true
-    }),
+      store: new pgSession({
+        pool: pool,
+        schemaName: "public",
+        tableName: "user_sessions",
+        createTableIfMissing: true
+      }),
 
-    cookie: {
-      maxAge: expireTime,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    },
-  })
+      cookie: {
+        maxAge: expireTime,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      },
+    })
 );
+
+// expose auth state to views
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = !!req.session?.authenticated;
+  res.locals.userName = req.session?.name || null;
+  next();
+});
 
 // helper
 function isLoggedIn(req) {
@@ -67,7 +71,6 @@ function isLoggedIn(req) {
 }
 
 // routes
-
 app.get("/", (req, res) => {
   res.render("homePagePreLogin", { title: "Foodle" });
 });
@@ -89,14 +92,17 @@ app.get("/cartPage", (req, res) => {
 });
 
 app.get("/accountPage", (req, res) => {
+  if (!isLoggedIn(req)) {
+    return res.redirect("/loginPage");
+  }
   res.render("accountPage", { title: "Account" });
 });
 
 app.get("/favouritePage", (req, res) => {
-  res.render("favouritePage", { 
+  res.render("favouritePage", {
     title: "Favorites",
     cssFiles: ["/css/favorite.css"]
-   });
+  });
 });
 
 app.get("/foodBanks", (req, res) => {
@@ -120,10 +126,10 @@ app.get("/otherServices", (req, res) => {
 });
 
 app.get("/profilePage", (req, res) => {
-  res.render("profilePage", { 
+  res.render("profilePage", {
     title: "Profile",
     cssFiles: ["/css/profile.css"]
-   });
+  });
 });
 
 app.get("/aiSearchPage", (req, res) => {
@@ -164,16 +170,18 @@ app.post("/signupSubmit", async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   try {
-    await pool.query(
-      `
+    const insertResult = await pool.query(
+        `
       INSERT INTO foodle_db.users
       (name, email, password_hash)
       VALUES ($1, $2, $3)
+      RETURNING id
       `,
-      [name, email, hashedPassword]
+        [name, email, hashedPassword]
     );
 
     req.session.authenticated = true;
+    req.session.userId = insertResult.rows[0].id;
     req.session.name = name;
     req.session.email = email;
     req.session.cookie.maxAge = expireTime;
@@ -213,12 +221,12 @@ app.post("/loginSubmit", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `
-      SELECT *
-      FROM foodle_db.users
-      WHERE email = $1
-      `,
-      [email]
+        `
+          SELECT *
+          FROM foodle_db.users
+          WHERE email = $1
+        `,
+        [email]
     );
 
     const user = result.rows[0];
@@ -234,6 +242,7 @@ app.post("/loginSubmit", async (req, res) => {
     }
 
     req.session.authenticated = true;
+    req.session.userId = user.id;
     req.session.name = user.name;
     req.session.email = user.email;
     req.session.cookie.maxAge = expireTime;
@@ -252,8 +261,21 @@ app.post("/loginSubmit", async (req, res) => {
 
 // logout
 app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Session destroy error:", err);
+      return res.redirect("/mainPage");
+    }
+
+    res.clearCookie("connect.sid", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    });
+
+    res.redirect("/");
+  });
 });
 
 app.listen(port, () => {
