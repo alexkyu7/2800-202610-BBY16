@@ -6,7 +6,7 @@ const body = document.getElementById("egg-body");
 const closeBtn = document.getElementById("egg-close-btn");
 const audio = document.getElementById("egg-audio");
 
-const messages = [
+const fallbackMessages = [
     "You’re doing great — one step at a time.",
     "Thanks for caring for your community 💚",
     "Small wins count. Keep going.",
@@ -14,8 +14,23 @@ const messages = [
     "Need help today? You’re not alone."
 ];
 
+let messages = [...fallbackMessages];
 let clickCount = 0;
 let clickTimer;
+
+async function loadMessages() {
+    try {
+        const res = await fetch('/data/encouragements.txt', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+        if (lines.length > 0) {
+            messages = lines;
+        }
+    } catch (err) {
+        console.warn('Failed to load encouragements.txt, using fallback.', err);
+    }
+}
 
 function resetClicks() {
     clickCount = 0;
@@ -67,3 +82,6 @@ backdrop.addEventListener("click", () => {
     backdrop.classList.remove("active");
     modal.classList.remove("active");
 });
+
+// load phrases on page load
+loadMessages();
