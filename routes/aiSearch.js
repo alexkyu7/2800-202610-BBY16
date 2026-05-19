@@ -97,37 +97,53 @@ Here are the services found in the database. Please rank them from most discount
 
 ${JSON.stringify(servicesFromDB, null, 2)}`;
 
+        const modelFallbacks = [
+            'deepseek/deepseek-v4-flash:free',
+            'deepseek/deepseek-chat:free',
+            'qwen/qwen-2.5-7b-instruct:free',
+            'mistral/mistral-7b-instruct:free'
+        ];
+
         let parsed;
+        let lastAiError;
 
-        try {
-            const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                    'HTTP-Referer': 'http://localhost:3000',
-                    'X-Title': 'Foodle AI Search'
-                },
-                body: JSON.stringify({
-                    model: 'deepseek/deepseek-v4-flash:free',
-                    max_tokens: 2048,
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userPrompt }
-                    ]
-                })
-            });
+        for (const model of modelFallbacks) {
+            try {
+                const openrouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                        'HTTP-Referer': 'http://localhost:3000',
+                        'X-Title': 'Foodle AI Search'
+                    },
+                    body: JSON.stringify({
+                        model,
+                        max_tokens: 2048,
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'user', content: userPrompt }
+                        ]
+                    })
+                });
 
-            const openrouterData = await openrouterResponse.json();
+                const openrouterData = await openrouterResponse.json();
 
-            if (!openrouterResponse.ok) {
-                throw new Error(`OpenRouter error: ${JSON.stringify(openrouterData)}`);
+                if (!openrouterResponse.ok) {
+                    throw new Error(`OpenRouter error (${model}): ${JSON.stringify(openrouterData)}`);
+                }
+
+                const rawText = openrouterData.choices?.[0]?.message?.content || '';
+                parsed = JSON.parse(rawText);
+                break;
+            } catch (err) {
+                lastAiError = err;
+                console.error(`OpenRouter AI error for model ${model}:`, err);
             }
+        }
 
-            const rawText = openrouterData.choices?.[0]?.message?.content || '';
-            parsed = JSON.parse(rawText);
-        } catch (aiErr) {
-            console.error('OpenRouter AI error, falling back to mock:', aiErr);
+        if (!parsed) {
+            console.error('All AI models failed, falling back to mock:', lastAiError);
 
             // Mock fallback: simple deterministic ranking
             const mockResults = servicesFromDB.map((s) => ({

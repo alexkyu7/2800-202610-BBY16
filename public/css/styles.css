@@ -834,3 +834,94 @@ footer .mobile {
   .ai-search-form-row { grid-template-columns: 1fr; }
   .ai-search-btn      { width: 100%; justify-content: center; }
 }
+
+/* =============================
+   Easter Egg Modal + Animation
+   ============================= */
+
+.navbar.easter-egg {
+  background: #2d7a4f;
+  color: #fff;
+}
+.navbar.easter-egg a {
+  color: #fff;
+}
+.navbar.easter-egg .btn {
+  background: #fff;
+  color: #2d7a4f;
+}
+
+#egg-logo.egg-bounce {
+  animation: egg-bounce 0.6s ease;
+}
+
+@keyframes egg-bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  60%  { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* modal */
+#egg-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,0.55);
+}
+#egg-backdrop.active {
+  display: block;
+}
+
+#egg-modal {
+  display: none;
+  position: fixed;
+  z-index: 9100;
+  width: 320px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 6px 28px rgba(0,0,0,0.22));
+}
+#egg-modal.active {
+  display: block;
+}
+
+#egg-inner {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px 24px 18px;
+}
+#egg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+#egg-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+}
+#egg-close-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #2d7a4f;
+  cursor: pointer;
+  text-decoration: underline;
+}
+#egg-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #1a1a1a;
+}
+#egg-body {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}

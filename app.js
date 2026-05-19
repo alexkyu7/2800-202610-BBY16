@@ -24,7 +24,6 @@ const saltRounds = 12;
 const expireTime = 1 * 60 * 60 * 1000;
 
 app.set("trust proxy", 1);
-
 app.set("view engine", "ejs");
 
 app.use(express.json());
@@ -40,30 +39,30 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
     session({
-        secret: process.env.NODE_SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
+      secret: process.env.NODE_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
 
-        store: new pgSession({
-            pool: pool,
-            schemaName: "public",
-            tableName: "user_sessions",
-            createTableIfMissing: true
-        }),
+      store: new pgSession({
+        pool: pool,
+        schemaName: "public",
+        tableName: "user_sessions",
+        createTableIfMissing: true
+      }),
 
-        cookie: {
-            maxAge: expireTime,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        },
+      cookie: {
+        maxAge: expireTime,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      },
     })
 );
 
 // expose auth state to views
 app.use((req, res, next) => {
-    res.locals.isLoggedIn = !!req.session?.authenticated;
-    res.locals.userName = req.session?.name || null;
-    next();
+  res.locals.isLoggedIn = !!req.session?.authenticated;
+  res.locals.userName = req.session?.name || null;
+  next();
 });
 
 // helper
@@ -72,7 +71,6 @@ function isLoggedIn(req) {
 }
 
 // routes
-
 app.get("/", (req, res) => {
     res.render("homePagePreLogin", { title: "Foodle" });
 });
@@ -94,17 +92,17 @@ app.get("/cartPage", (req, res) => {
 });
 
 app.get("/accountPage", (req, res) => {
-    if (!isLoggedIn(req)) {
-        return res.redirect("/loginPage");
-    }
-    res.render("accountPage", { title: "Account" });
+  if (!isLoggedIn(req)) {
+    return res.redirect("/loginPage");
+  }
+  res.render("accountPage", { title: "Account" });
 });
 
 app.get("/favouritePage", (req, res) => {
-    res.render("favouritePage", {
-        title: "Favorites",
-        cssFiles: ["/css/favorite.css"]
-    });
+  res.render("favouritePage", {
+    title: "Favorites",
+    cssFiles: ["/css/favorite.css"]
+  });
 });
 
 app.get("/foodBanks", (req, res) => {
@@ -128,10 +126,10 @@ app.get("/otherServices", (req, res) => {
 });
 
 app.get("/profilePage", (req, res) => {
-    res.render("profilePage", {
-        title: "Profile",
-        cssFiles: ["/css/profile.css"]
-    });
+  res.render("profilePage", {
+    title: "Profile",
+    cssFiles: ["/css/profile.css"]
+  });
 });
 
 app.get("/aiSearchPage", (req, res) => {
@@ -140,7 +138,7 @@ app.get("/aiSearchPage", (req, res) => {
 
 // signup
 app.get("/signUp", (req, res) => {
-    res.render("signUp", { error: null });
+  res.render("signUp", { error: null });
 });
 
 app.post("/signupSubmit", async (req, res) => {
@@ -171,34 +169,34 @@ app.post("/signupSubmit", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    try {
-        const insertResult = await pool.query(
-            `
+  try {
+    const insertResult = await pool.query(
+        `
       INSERT INTO foodle_db.users
       (name, email, password_hash)
       VALUES ($1, $2, $3)
       RETURNING id
       `,
-            [name, email, hashedPassword]
-        );
+        [name, email, hashedPassword]
+    );
 
-        req.session.authenticated = true;
-        req.session.userId = insertResult.rows[0].id;
-        req.session.name = name;
-        req.session.email = email;
-        req.session.cookie.maxAge = expireTime;
+    req.session.authenticated = true;
+    req.session.userId = insertResult.rows[0].id;
+    req.session.name = name;
+    req.session.email = email;
+    req.session.cookie.maxAge = expireTime;
 
-        req.session.save((err) => {
-            if (err) console.error("Session save error:", err);
-            res.redirect("/mainPage");
-        });
-    } catch (err) {
-        console.error(err);
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/mainPage");
+    });
+  } catch (err) {
+    console.error(err);
 
-        res.render("signUp", {
-            error: "Unable to create account."
-        });
-    }
+    res.render("signUp", {
+      error: "Unable to create account."
+    });
+  }
 });
 
 // login
@@ -224,10 +222,10 @@ app.post("/loginSubmit", async (req, res) => {
     try {
         const result = await pool.query(
             `
-                SELECT *
-                FROM foodle_db.users
-                WHERE email = $1
-            `,
+      SELECT *
+      FROM foodle_db.users
+      WHERE email = $1
+      `,
             [email]
         );
 
@@ -263,24 +261,23 @@ app.post("/loginSubmit", async (req, res) => {
 
 // logout
 app.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Session destroy error:", err);
-            return res.redirect("/mainPage");
-        }
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Session destroy error:", err);
+      return res.redirect("/mainPage");
+    }
 
-        // Default cookie name for express-session is "connect.sid"
-        res.clearCookie("connect.sid", {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
-        });
-
-        res.redirect("/");
+    res.clearCookie("connect.sid", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     });
+
+    res.redirect("/");
+  });
 });
 
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });

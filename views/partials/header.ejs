@@ -20,7 +20,7 @@
 <body>
 <header class="navbar">
     <div class="brand">
-        <img src="/img/foodle_logo.png" alt="Foodle">
+        <img src="/img/foodle_logo.png" alt="Foodle" id="egg-logo">
     </div>
     <nav class="desktop">
         <a href="/mainPage" class="active">Home</a>
@@ -45,4 +45,19 @@
             <a href="/signUp" class="btn-outline">Sign up</a>
         <% } %>
     </div>
+    <!-- Easter Egg Modal -->
+    <div id="egg-backdrop" aria-hidden="true"></div>
+    <div id="egg-modal" role="dialog" aria-modal="true" aria-labelledby="egg-title">
+        <div id="egg-inner">
+            <div id="egg-header">
+                <span id="egg-step-label">Secret Message</span>
+                <button id="egg-close-btn" aria-label="Close">Close</button>
+            </div>
+            <h2 id="egg-title">You found it!</h2>
+            <p id="egg-body"></p>
+        </div>
+    </div>
+
+    <audio id="egg-audio" src="/audio/guitarSound.mp3" preload="auto"></audio>
+    <script src="/js/easterEgg.js" defer></script>
 </header>
