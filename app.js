@@ -211,17 +211,6 @@ app.post("/loginSubmit", async (req, res) => {
         email: Joi.string().email().required(),
         password: Joi.string().max(20).required(),
     });
-  }
-
-  try {
-    const result = await pool.query(
-        `
-          SELECT *
-          FROM foodle_db.users
-          WHERE email = $1
-        `,
-        [email]
-    );
 
     const { error } = schema.validate({ email, password });
     if (error) {
@@ -233,10 +222,10 @@ app.post("/loginSubmit", async (req, res) => {
     try {
         const result = await pool.query(
             `
-                SELECT *
-                FROM foodle_db.users
-                WHERE email = $1
-            `,
+      SELECT *
+      FROM foodle_db.users
+      WHERE email = $1
+      `,
             [email]
         );
 
@@ -268,23 +257,6 @@ app.post("/loginSubmit", async (req, res) => {
             error: "Login failed."
         });
     }
-
-    req.session.authenticated = true;
-    req.session.userId = user.id;
-    req.session.name = user.name;
-    req.session.email = user.email;
-    req.session.cookie.maxAge = expireTime;
-
-    req.session.save((err) => {
-      if (err) console.error("Session save error:", err);
-      res.redirect("/mainPage");
-    });
-  } catch (err) {
-    console.error(err);
-    res.render("loginPage", {
-      error: "Login failed."
-    });
-  }
 });
 
 // logout
